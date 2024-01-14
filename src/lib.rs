@@ -1,4 +1,7 @@
 pub mod config;
+pub mod utils {
+    pub mod parse;
+}
 mod days;
 mod solution;
 
