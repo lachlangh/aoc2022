@@ -1,4 +1,3 @@
-use std::fs;
 use crate::solution::Solution;
 
 #[derive(PartialEq, Eq, Clone)]
@@ -9,22 +8,23 @@ enum Shape {
 }
 
 /// Convert character to shape
-fn parse_shape(x: char) -> Result<Shape, String> {
+fn parse_shape(x: &u8) -> Result<Shape, String> {
     match x {
-        'A' | 'X' => Ok(Shape::Rock),
-        'B' | 'Y' => Ok(Shape::Paper),
-        'C' | 'Z' => Ok(Shape::Scissors),
+        b'A' | b'X' => Ok(Shape::Rock),
+        b'B' | b'Y' => Ok(Shape::Paper),
+        b'C' | b'Z' => Ok(Shape::Scissors),
         _ => Err("Unrecognised shape".to_string())
     }
 }
 
-/// Read shapes from puzzle input, odd shapes belong to elf.
-fn read_shapes() -> Vec<Shape> {
-    return fs::read_to_string("data/day02.txt")
-        .unwrap()
-        .chars()
-        .filter(|s| !s.is_whitespace())
-        .map(|s| parse_shape(s).unwrap())
+/// Read shapes from input, return a vector of tuples containing the shapes 
+/// used in each rock-paper-scissors game.
+/// 
+/// Panics if input is not in expected format
+fn read_shapes() -> Vec<(Shape, Shape)> {
+    return include_bytes!("../../data/day02.txt")
+        .split(|b| *b == b'\n')
+        .map(|l| (parse_shape(&l[0]).unwrap(), parse_shape(&l[2]).unwrap()))
         .collect()
 }
 
@@ -73,33 +73,23 @@ fn swap_shape(me: &Shape, elf: &Shape) -> Shape {
 }
 
 pub fn part1() -> Solution {
-    let mut moves = read_shapes().into_iter();
     let mut solution: i32 = 0;
 
-    while let Some(elf) = moves.next() {
-        if let Some(me) = moves.next() {
-            solution += (score_shape(&me) + score_match(&me, &elf)) as i32
-        } else {
-            break;
-        }
+    for (elf, me) in read_shapes() {
+        solution += (score_shape(&me) + score_match(&me, &elf)) as i32
     }
 
-    Solution { solution: solution as i32 }
+    Solution { solution: solution }
 }
 
 pub fn part2() -> Solution {
-    let mut moves = read_shapes().into_iter();
+    let mut solution: i32 = 0;
     let mut my_shape: Shape;
 
-    let mut solution: i32 = 0;
-    while let Some(elf) = moves.next() {
-        if let Some(me) = moves.next() {
-            my_shape = swap_shape(&me, &elf);
-            solution += (score_shape(&my_shape) + score_match(&my_shape, &elf)) as i32
-        } else {
-            break;
-        }
+    for (elf, me) in read_shapes() {
+        my_shape = swap_shape(&me, &elf);
+        solution += (score_shape(&my_shape) + score_match(&my_shape, &elf)) as i32
     }
-
-    Solution { solution: solution as i32 }
+    
+    Solution { solution: solution }
 }
