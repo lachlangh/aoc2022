@@ -34,8 +34,8 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         }
     }
 
-    let elapsed = clock.elapsed().as_millis();
-    println!("  - Elapsed: {:.2}ms", elapsed);
+    let elapsed = clock.elapsed().as_micros();
+    println!("  - Elapsed: {}µs", elapsed);
 
     Ok(())
 }
