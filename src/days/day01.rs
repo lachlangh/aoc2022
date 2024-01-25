@@ -1,20 +1,13 @@
 use crate::solution::Solution;
 
-fn elf_totals() -> Vec<i32> {
-    include_str!("../../data/day01.txt").
-        split("\r\n\r\n")
-        .map(|v| v.lines().map(|i| i.parse::<i32>().unwrap()).sum())
-        .collect()
-}
-
-
 pub fn part1() -> Solution {
-    Solution { solution: *elf_totals().iter().max().unwrap() }
+    let solution = 0;
+
+    Solution { solution }
 }
 
 pub fn part2() -> Solution {
-    let mut totals = elf_totals();
-    totals.sort();
+    let solution = 0;
 
-    Solution { solution: totals.iter().rev().take(3).sum() }
+    Solution { solution }
 }
